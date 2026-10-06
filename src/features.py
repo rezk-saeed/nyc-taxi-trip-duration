@@ -23,7 +23,7 @@ def add_features(df):
     # --- time ---
     out["hour"] = pickup.dt.hour
     out["dayofweek"] = pickup.dt.dayofweek
-
+    out["month"] = pickup.dt.month
     # --- distance ---
     out["distance_km"] = haversine_km(
         out["pickup_latitude"], out["pickup_longitude"],
