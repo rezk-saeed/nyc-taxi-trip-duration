@@ -25,4 +25,11 @@ MODEL_PATH = ROOT / "models" / "ridge_pipeline.joblib"
 
 # ---- Features fed to the model (grow this list as we add features) ---------
 CATEGORICAL_FEATURES = ["hour", "dayofweek"]
-NUMERIC_FEATURES = ["log_distance_km"]
+NUMERIC_FEATURES = ["log_distance_km", "is_jfk", "is_lga"]
+
+# ---- Airports ---------------------------------------------------------------
+AIRPORTS = {
+    "jfk": (40.6413, -73.7781),   # (latitude, longitude)
+    "lga": (40.7769, -73.8740),
+}
+AIRPORT_RADIUS_KM = 2

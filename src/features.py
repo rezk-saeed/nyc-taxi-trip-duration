@@ -1,7 +1,7 @@
 """Feature engineering helpers."""
 import numpy as np
 import pandas as pd
-
+from src import config as cfg
 
 def haversine_km(lat1, lon1, lat2, lon2):
     """Great-circle distance in km between two points (works on arrays/Series)."""
@@ -30,4 +30,11 @@ def add_features(df):
         out["dropoff_latitude"], out["dropoff_longitude"],
     )
     out["log_distance_km"] = np.log1p(out["distance_km"])
+
+        # --- airports: trip starts OR ends near the airport ---
+    for name, (air_lat, air_lon) in cfg.AIRPORTS.items():
+        pickup_km = haversine_km(out["pickup_latitude"], out["pickup_longitude"], air_lat, air_lon)
+        dropoff_km = haversine_km(out["dropoff_latitude"], out["dropoff_longitude"], air_lat, air_lon)
+        out[f"is_{name}"] = (( pickup_km < cfg.AIRPORT_RADIUS_KM ) | ( dropoff_km < cfg.AIRPORT_RADIUS_KM )).astype(int)
+
     return out
