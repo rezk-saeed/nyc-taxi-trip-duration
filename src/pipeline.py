@@ -6,6 +6,7 @@ from sklearn.preprocessing import FunctionTransformer, OneHotEncoder, StandardSc
 
 from src import config as cfg
 from src.features import add_features
+from src.features import ZoneEncoder, add_features
 
 
 def build_pipeline() -> Pipeline:
@@ -16,6 +17,7 @@ def build_pipeline() -> Pipeline:
     ])
     return Pipeline([
         ("features", FunctionTransformer(add_features)),
+        ("zones", ZoneEncoder(cfg.ZONE_COUNT, cfg.ZONE_FIT_SAMPLE_SIZE, cfg.RANDOM_STATE)),
         ("preprocess", preprocess),
         ("model", Ridge(alpha=cfg.RIDGE_ALPHA)),
     ])

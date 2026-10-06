@@ -1,4 +1,6 @@
 """Train the Ridge pipeline, evaluate on validation, and save it."""
+import os
+os.environ.setdefault("LOKY_MAX_CPU_COUNT", "4")   # silences the joblib core-count warning on Windows
 import argparse
 from pathlib import Path
 

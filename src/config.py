@@ -24,7 +24,7 @@ RIDGE_ALPHA = 1.0
 MODEL_PATH = ROOT / "models" / "ridge_pipeline.joblib"
 
 # ---- Features fed to the model (grow this list as we add features) ---------
-CATEGORICAL_FEATURES = ["hour", "dayofweek", "month"]
+CATEGORICAL_FEATURES = ["hour", "dayofweek", "month", "pickup_zone", "dropoff_zone"]
 NUMERIC_FEATURES = ["log_distance_km", "is_jfk", "is_lga"]
 
 # ---- Airports ---------------------------------------------------------------
@@ -33,3 +33,7 @@ AIRPORTS = {
     "lga": (40.7769, -73.8740),
 }
 AIRPORT_RADIUS_KM = 2
+
+# ---- Zones (KMeans on pickup + dropoff coordinates) --------------------------
+ZONE_COUNT = 20
+ZONE_FIT_SAMPLE_SIZE = 200_000
