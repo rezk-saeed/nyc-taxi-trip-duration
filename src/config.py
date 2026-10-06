@@ -35,5 +35,5 @@ AIRPORTS = {
 AIRPORT_RADIUS_KM = 2
 
 # ---- Zones (KMeans on pickup + dropoff coordinates) --------------------------
-ZONE_COUNT = 20
+ZONE_COUNT = 200
 ZONE_FIT_SAMPLE_SIZE = 200_000
