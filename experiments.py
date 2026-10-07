@@ -26,7 +26,7 @@ from src.data import load_csv
 from src.pipeline import build_pipeline
 
 # (ROUTE_ZONE_COUNT, ROUTE_MIN_COUNT) combinations to try
-GRID = [(100, 100), (150, 100), (200, 100), (200, 300), (100, 300)]
+GRID = [(100, 100), (100, 50), (100, 30), (100, 10), (150, 30)]
 
 
 def parse_args():
