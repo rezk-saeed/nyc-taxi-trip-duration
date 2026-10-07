@@ -39,5 +39,5 @@ ZONE_COUNT = 500
 ZONE_FIT_SAMPLE_SIZE = 500_000
 
 # ---- Routes (pickup zone x dropoff zone, using a coarse zoning) ---------------
-ROUTE_ZONE_COUNT = 150
-ROUTE_MIN_COUNT = 30        # routes with fewer training trips are merged into one group
+ROUTE_ZONE_COUNT = 250
+ROUTE_MIN_COUNT = 10        # routes with fewer training trips are merged into one group
