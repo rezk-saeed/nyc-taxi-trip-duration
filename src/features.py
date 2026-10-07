@@ -1,9 +1,11 @@
 """Feature engineering helpers."""
 import numpy as np
 import pandas as pd
-from src import config as cfg
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.cluster import KMeans
+
+from src import config as cfg
+
 
 def haversine_km(lat1, lon1, lat2, lon2):
     """Great-circle distance in km between two points (works on arrays/Series)."""
@@ -26,6 +28,7 @@ def add_features(df):
     out["hour"] = pickup.dt.hour
     out["dayofweek"] = pickup.dt.dayofweek
     out["dayofyear"] = pickup.dt.dayofyear
+
     # --- distance ---
     out["distance_km"] = haversine_km(
         out["pickup_latitude"], out["pickup_longitude"],
@@ -33,21 +36,26 @@ def add_features(df):
     )
     out["log_distance_km"] = np.log1p(out["distance_km"])
 
-        # --- airports: trip starts OR ends near the airport ---
+    # --- airports: trip starts OR ends near the airport ---
     for name, (air_lat, air_lon) in cfg.AIRPORTS.items():
         pickup_km = haversine_km(out["pickup_latitude"], out["pickup_longitude"], air_lat, air_lon)
         dropoff_km = haversine_km(out["dropoff_latitude"], out["dropoff_longitude"], air_lat, air_lon)
-        out[f"is_{name}"] = (( pickup_km < cfg.AIRPORT_RADIUS_KM ) | ( dropoff_km < cfg.AIRPORT_RADIUS_KM )).astype(int)
-
+        out[f"is_{name}"] = ((pickup_km < cfg.AIRPORT_RADIUS_KM) | (dropoff_km < cfg.AIRPORT_RADIUS_KM)).astype(int)
     return out
 
-class ZoneEncoder(BaseEstimator, TransformerMixin):
-    """Assign every pickup and dropoff point to a KMeans zone (fit on train only)."""
 
-    def __init__(self, n_zones=20, fit_sample_size=200_000, random_state=42):
+class ZoneEncoder(BaseEstimator, TransformerMixin):
+    """Assign every pickup and dropoff point to a KMeans zone (fit on train only).
+
+    `prefix` lets us use two encoders with different zone counts side by side
+    (e.g. fine zones: "pickup_zone"; coarse zones: "route_pickup_zone").
+    """
+
+    def __init__(self, n_zones=20, fit_sample_size=200_000, random_state=42, prefix=""):
         self.n_zones = n_zones
         self.fit_sample_size = fit_sample_size
         self.random_state = random_state
+        self.prefix = prefix
 
     def fit(self, X, y=None):
         points = np.vstack([
@@ -63,6 +71,15 @@ class ZoneEncoder(BaseEstimator, TransformerMixin):
 
     def transform(self, X):
         out = X.copy()
-        out["pickup_zone"] = self.kmeans_.predict(X[["pickup_latitude", "pickup_longitude"]].to_numpy())
-        out["dropoff_zone"] = self.kmeans_.predict(X[["dropoff_latitude", "dropoff_longitude"]].to_numpy())
+        out[f"{self.prefix}pickup_zone"] = self.kmeans_.predict(
+            X[["pickup_latitude", "pickup_longitude"]].to_numpy())
+        out[f"{self.prefix}dropoff_zone"] = self.kmeans_.predict(
+            X[["dropoff_latitude", "dropoff_longitude"]].to_numpy())
         return out
+
+
+def add_route(df):
+    """Combine the coarse pickup and dropoff zones into a single route id."""
+    out = df.copy()
+    out["route"] = out["route_pickup_zone"] * cfg.ROUTE_ZONE_COUNT + out["route_dropoff_zone"]
+    return out
