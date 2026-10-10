@@ -23,8 +23,7 @@ from src.evaluate import evaluate
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description=__doc__,
-                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(description=__doc__,formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--data", required=True, help="Path to the CSV file to score.")
     parser.add_argument("--model-path", default=cfg.MODEL_PATH,
                         help="Path to the saved model (default: models/ridge_pipeline.joblib).")
