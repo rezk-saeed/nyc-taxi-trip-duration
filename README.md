@@ -11,6 +11,8 @@ The target is `log1p(trip_duration)` and the metric is R².
 | Val R² | 0.7107 |
 | Val RMSE (log scale) | 0.4303 |
 | Train R² (cleaned train set) | 0.7795 |
+| Test R² (single evaluation, 229,322 trips) | 0.7151 |
+| Test RMSE (log scale) | 0.4248 |
 
 Progress on the validation set while features were added (full data):
 
